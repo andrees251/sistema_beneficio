@@ -71,6 +71,23 @@ require_once "../conexion.php";
             </div>
 
         </div>
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    <h4>Productos</h4>
+
+                    <p>Listar los productos.</p>
+
+                    <a href="../productos/listado_productos.php" class="btn btn-success">Ir</a>
+
+                </div>
+
+            </div>
+
+        </div>
 
         <div class="col-md-4">
 

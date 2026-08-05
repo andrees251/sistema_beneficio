@@ -8,7 +8,7 @@ if(!isset($_SESSION["idusuario"])){
     exit;
 }
 
-if($_SESSION["rol"] != "admin"){
+if($_SESSION["rol"] != "admin" && $_SESSION["rol"] != "vendedor"){
     header("Location: ../login/login.php");
     exit;
 }

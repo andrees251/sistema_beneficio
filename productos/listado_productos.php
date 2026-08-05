@@ -1,3 +1,4 @@
+
 <?php
 
 session_start();
@@ -7,23 +8,18 @@ if(!isset($_SESSION["idusuario"])){
     exit;
 }
 
-if($_SESSION["rol"] != "vendedor"){
+if($_SESSION["rol"] != "admin"){
     header("Location: ../login/login.php");
     exit;
 }
 
 require_once "../conexion.php";
+$sql="select * from productos order by idproductos";
+$stmt=$conex->prepare($sql);
+if($stmt->execute()){
+  $resultado=$stmt->get_result();
 
-$idusuario = $_SESSION["idusuario"];
-
-
-$sql = "SELECT venta.*, usuarios.nombre, usuarios.apellido FROM venta INNER JOIN usuarios ON venta.idusuario = usuarios.idusuario WHERE venta.idusuario = ? ORDER BY fecha_venta DESC";
-
-$stmt = $conex->prepare($sql);
-$stmt->bind_param("i", $idusuario);
-$stmt->execute();
-
-$resultado = $stmt->get_result();
+}
 
 ?>
 
@@ -41,27 +37,27 @@ $resultado = $stmt->get_result();
 
   <div class="container text-center ">
     <div class="text-center my-5">
-      <h2>Listado De Ventas</h2>
+      <h2>Listado De Productos</h2>
     </div>
-    <div class="col-11 d-flex justify-content-end">
-
-    <a href="index.php" class="btn btn-primary">Volver</a>
-
-  </div>
   </div>
   
+    <div class="col-11 d-flex justify-content-end">
+
+    <a href="crear_prod.php" class="btn btn-primary">Agregar</a>
+
+  </div>
 
   <section>
 
 <table class="table table-striped">
   <thead>
     <tr>
-      <th scope="col">Codigo Venta</th>
-      <th scope="col">Monto</th>
-      <th scope="col">Fecha Venta</th>
-      <th scope="col">Hecha por</th>
-      <th scope="col">Estado</th>
-      <th scope="col">Accion</th>
+      <th scope="col">Codigo Producto</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Precio</th>
+      <th scope="col">Stock Inicial</th>
+      <th scope="col">Stock Actual</th>
+
     </tr>
   </thead>
   <tbody>
@@ -75,30 +71,31 @@ $resultado = $stmt->get_result();
     ?>
 
     <tr>
-        <th scope="row"><?php echo $fila["idventa"]; ?></th>
-        <td><?php echo $fila["monto"];?></td>
-        <td><?php echo $fila["fecha_venta"];?></td>
-        <td><?php echo $fila["nombre"];echo " "; echo $fila["apellido"];?></td>
-        <td><?php echo $fila["estado_venta"];?></td>
+        <th scope="row"><?php echo $fila["idproductos"]; ?></th>
+        <td><?php echo $fila["nombre_prod"];?></td>
+        <td><?php echo $fila["precio"];?></td>
+        
+        <td><?php echo $fila["stock_inicial"];?></td>
+        
+        <td><?php echo $fila["stock_actual"];?></td>
         <td>
           <div class="d-flex gap-2">
 
-            <form action="../ventas/editar.php" method="post">
-              <input type="hidden" name="idventa" id="idventa" value="<?php echo $fila["idventa"]; ?>">
-              <button type="submit" class="btn btn-outline-secondary">Editar</button>
+            <form action="editar_usuario.php" method="post">
+              <input type="hidden" name="idusuario" id="idusuario" value="<?php echo $fila["idproductos"]; ?>">
+              <button type="submit" class="btn btn-outline-success">Editar</button>
             </form>
-            <form action="../ventas/detalle_venta.php" method="post">
-              <input type="hidden" name="idventa" id="idventa" value="<?php echo $fila["idventa"]; ?>">
+  
+            <form action="detalle_usuario.php" method="post">
+              <input type="hidden" name="idusuario" id="idusuario" value="<?php echo $fila["idproductos"]; ?>">
               <button type="submit" class="btn btn-outline-secondary">Ver Detalles</button>
             </form>
           </div>
 
         </td>
+       
         
-
         
-        
-        </td>
     </tr>
   <?php
       } else{
@@ -108,7 +105,11 @@ $resultado = $stmt->get_result();
 
   </tbody>
 </table>
-  
+  <div class="col-11 d-flex justify-content-end">
+
+    <a href="../admin/inicio_admin.php" class="btn btn-primary">Volver</a>
+
+  </div>
 
    
   </section>

@@ -78,6 +78,10 @@ if($stmt->execute()){
         <td>
           <div class="d-flex gap-2">
 
+            <form action="editar.php" method="post">
+              <input type="hidden" name="idventa" id="idventa" value="<?php echo $fila["idventa"]; ?>">
+              <button type="submit" class="btn btn-outline-secondary">Editar</button>
+            </form>
             <form action="detalle_venta.php" method="post">
               <input type="hidden" name="idventa" id="idventa" value="<?php echo $fila["idventa"]; ?>">
               <button type="submit" class="btn btn-outline-secondary">Ver Detalles</button>
