@@ -8,21 +8,22 @@ session_start();
 
 require_once "../conexion.php";
 
-if (!isset($_POST["idusuario"])) {
-    die("Usuario no encontrado.");
+if (!isset($_POST["idventa"])) {
+    die("Venta no encontrada.");
 }
 
 $idventa = $_POST["idventa"];
 
-$sql = "SELECT * FROM usuarios WHERE idusuario = ?";
+$sql = "SELECT v.idventa,v.monto, v.estado_venta, v.fecha_venta, v.idusuario, dv.idproductos,dv.cantidad, dv.precio_unitario, dv.fecha_entrega, p.* FROM venta AS v INNER JOIN detalle_venta AS dv ON v.idventa = dv.idventa INNER JOIN productos AS p  ON dv.idproductos = p.idproductos WHERE v.idventa = ?";
+
 $stmt = $conex->prepare($sql);
-$stmt->bind_param("i", $idusuario);
+$stmt->bind_param("i", $idventa);
 $stmt->execute();
 
 $resultado = $stmt->get_result();
 
 if ($resultado->num_rows == 0) {
-    die("Usuario no existe.");
+    die("Venta no existe.");
 }
 
 $fila = $resultado->fetch_assoc();
@@ -42,53 +43,43 @@ $fila = $resultado->fetch_assoc();
 
 <h2>Editar Usuario</h2>
 
-<form action="actualizar_usuario.php" method="post">
+<form action="actualizar_venta.php" method="post">
 
-    <input type="hidden" name="idusuario" value="<?php echo $fila["idusuario"]; ?>">
-
-    <div class="mb-3">
-        <label>Nombre</label>
-        <input
-            type="text" name="nombre" class="form-control" value="<?php echo $fila["nombre"]; ?>">
-    </div>
+    <input type="hidden" name="idventa" value="<?php echo $fila["idventa"]; ?>">
 
     <div class="mb-3">
-        <label>Apellido</label>
+        <label>Monto</label>
         <input
-            type="text" name="apellido" class="form-control" value="<?php echo $fila["apellido"]; ?>">
+            type="text" name="monto" class="form-control" value="<?php echo $fila["monto"]; ?>">
     </div>
 
-    <div class="mb-3">
-        <label>Dni</label>
-        <input
-            type="text" name="dni" class="form-control" value="<?php echo $fila["dni"]; ?>">
-    </div>
+    <label>Estado</label>
+    <select name="estado" class="form-select">
+        <option value="Pagada">Pagada</option>
 
-    <div class="mb-3">
-        <label>Email</label>
-        <input
-            type="email" name="email" class="form-control" value="<?php echo $fila["email"]; ?>">
-    </div>
+        <option value="Pendiente">Pendiente</option>
 
-    <div class="mb-3">
-        <label>Direccion</label>
-        <input
-            type="text" name="direccion" class="form-control" value="<?php echo $fila["direccion"]; ?>">
-    </div>
+        <option value="Entregada">Entregada</option>
 
-    <label>Rol</label>
-    <select name="rol" class="form-select">
-        <option value="usuario">Usuario</option>
-
-        <option value="vendedor">Vendedor</option>
-
-        <option value="admin">Administrador</option>
+        <option value="Cancelada">Cancelada</option>
 
     </select>
 
+    <div class="mb-3">
+        <label>Fecha</label>
+        <input
+            type="date" name="fecha_venta" class="form-control" value="<?php echo $fila["fecha_venta"]; ?>">
+    </div>
+
+    <div class="mb-3">
+        <label>Monto</label>
+        <input
+            type="text" name="monto" class="form-control" value="<?php echo $fila["monto"]; ?>">
+    </div>
+
     <button class="btn btn-success mt-3"> Guardar Cambios </button>
 
-    <a href="gestionar_usuarios.php" class="btn btn-secondary mt-3"> Cancelar </a>
+    <a href="../vendedor/mis_ventas.php" class="btn btn-secondary mt-3"> Cancelar </a>
 
 </form>
 
